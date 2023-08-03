@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title><%= pageTitle %></title>
+    <link rel="stylesheet" href="./style.css">
+
+</head>
+
+<body>
+    
+    <main>
+        <% if (prods.length >0) { %>
+            <div class="listing-section">
+              <% for(let product of prods){  %>
+                <div class="product">
+                    <div class="image-box">
+                      <div class="images" id="image-1">
+                        <img src="<%= product.images[1] %>" alt="product-image">
+                      </div>
+                    </div>
+                    <div class="text-box">
+                        <h2 class="item"><%= product.title%></h2>
+                        <h3 class="price"><%= product.price%></h3>
+                        <p class="description"><%= product.description%></p>
+                        <label for="item-1-quantity">Quantity:</label>
+                        <button type="button" name="item-1-button" id="item-1-button"><a href="/product/<%=product.id%>">View More</a></button>
+                      </div>
+                </div>
+            
+        </div>
+        <% } %>
+        <% }else{ %>
+                <h1>No Products Found!</h1>
+        <%}    %>
+        
+    </main>
+</body>
+
+</html>

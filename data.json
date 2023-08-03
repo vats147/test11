@@ -1,0 +1,31 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "title": "asdasd",
+      "description": "asdasd",
+      "url": "https://www.youtube.com/watch?v=56AD4lejvag",
+      "images": [
+        "/images/1691064997814-IMG_5798.jpg"
+      ]
+    },
+    {
+      "id": 2,
+      "title": "asdsadas",
+      "description": "asdasd",
+      "url": "https://upacademy.kr/plugin/php/php.ini",
+      "images": [
+        "/images/1691065010709-IMG_5798.jpg"
+      ]
+    },
+    {
+      "id": 3,
+      "title": "The best book",
+      "description": "Description ",
+      "url": "https://givemereport.vercel.app",
+      "images": [
+        "/images/1691065885142-Screenshot_2023-08-02-15-00-19-027_com.instagram.android.jpg"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Product</title>
+  <link href="https://unpkg.com/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+       .container {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+form {
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+label {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+input, textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+textarea {
+  min-height: 100px;
+}
+
+button {
+  background-color: #42b983;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #2e7d32;
+}
+
+  </style>
+</head>
+<body>
+  <div class="container mx-auto">
+    <form action="/product/<%= product.id %>" method="post">
+      <div class="mb-4">
+        <label for="title" class="text-gray-700">Title</label>
+        <input type="text" name="title" id="title" class="w-full border-gray-300 rounded-md py-2 px-3" value="<%= product.title %>">
+      </div>
+      <div class="mb-4">
+        <label for="description" class="text-gray-700">Description</label>
+        <textarea name="description" id="description" class="w-full border-gray-300 rounded-md py-2 px-3"><%= product.description %></textarea>
+      </div>
+      <div class="mb-4">
+        <label for="image" class="text-gray-700">Image</label>
+        <input type="file" name="image" id="image" class="w-full border-gray-300 rounded-md py-2 px-3">
+        <!-- You may choose to display the existing image here as a thumbnail if available -->
+        <% if (product.images) { %>
+          <img src="<%= product.images[0] %>" alt="Product Thumbnail" class="mt-2 w-24 h-auto" accept="image/*">
+        <% } else { %>
+          <!-- If there is no product image, you can display a placeholder image -->
+          <img src="https://via.placeholder.com/150" alt="Placeholder Thumbnail" class="mt-2 w-24 h-auto">
+        <% } %>
+      </div>
+      <div class="mb-4">
+        <label for="url" class="text-gray-700">URL</label>
+        <input type="text" name="url" id="url" class="w-full border-gray-300 rounded-md py-2 px-3" value="<%= product.url %>">
+      </div>
+      <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded-md">Update</button>
+    </form>
+  </div>
+  <script>
+       const form = document.querySelector("form");
+   
+       form.addEventListener("submit", async (event) => {
+         event.preventDefault();
+   // Validate Title
+   const titleInput = form.querySelector("#title");
+      const title = titleInput.value.trim();
+      if (!title) {
+        alert("Title is required.");
+        return;
+      }
+
+      // Validate Description
+      const descriptionInput = form.querySelector("#description");
+      const description = descriptionInput.value.trim();
+      if (!description) {
+        alert("Description is required.");
+        return;
+      }
+
+      // Validate URL
+      const urlInput = form.querySelector("#url");
+      const url = urlInput.value.trim();
+      const urlPattern = /^(ftp|http|https):\/\/[^ "]+$/;
+      if (!urlPattern.test(url)) {
+        alert("Invalid URL. Please enter a valid URL starting with 'http', 'https', or 'ftp'.");
+        return;
+      }
+
+      // Validate Image (Optional, you can skip this if image is not required)
+      const imageInput = form.querySelector("#image");
+      const image = imageInput.files[0];
+      if (image && !image.type.startsWith("image/")) {
+        alert("Invalid image format. Please upload an image file.");
+        return;
+      }
+         const formData = new FormData(form);
+   
+         // Send the data using fetch API
+         try {
+           const response = await fetch(form.action, {
+             method: "POST",
+             body: formData,
+           });
+   
+           if (response.ok) {
+             alert("Data updated successfully!");
+               window.location.href = "/admin";
+           } else {
+             alert("Something went wrong.");
+           }
+         } catch (error) {
+           console.error("Error occurred:", error);
+           alert("Something went wrong.");
+         }
+       });
+     </script>
+</body>
+</html>

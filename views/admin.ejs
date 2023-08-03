@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product List</title>
+  <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body>
+  <div class="container mx-auto  mt-5 ">
+    <h1 class="text-3xl mb-4 inline-block">Product List</h1>
+    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2 btn-primary float-right"><a href="/add-product">Add new Product</a></button>
+    <table class="table w-full ">
+      <thead>
+        <tr>
+          <th class="px-4 py-2">Title</th>
+          <th class="px-4 py-2">Description</th>
+          <th class="px-4 py-2">Product URL</th>
+          <th class="px-4 py-2">Image</th>
+
+          <th class="px-4 py-2">Referred URL</th>
+          <th class="px-4 py-2">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+       <% if (products.length >0) { %>
+        <% for (const product of products) { %>
+        <tr>
+          <td class="border px-4 py-2"><%= product.title %></td>
+          <td class="border px-4 py-2"><%= product.description %></td>
+          <td class="border px-4 py-2"><a href="/product/<%= product.id %>" target="_blank" rel="noopener noreferrer" style="text-decoration: underline;color: blue;">/product/<%= product.id %></a></td>
+
+          <td class="border px-4 py-2"><img src="<%= product.images[0] %>" alt="Product Image" class="w-20 h-20"></td>
+          <td class="border px-4 py-2"><a href="<%= product.url %>" target="_blank" rel="noopener noreferrer" style="text-decoration: underline;color: blue;"><%= product.url %></a></td>
+          <td class="border px-4 py-2">
+             
+              <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded copy-btn mt-2"
+              data-product-name="<%= product.id %>">Copy</button>
+                       <!-- Add query parameters for the edit link -->
+                       <a href="/edit?id=<%= product.id %>" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2 mb-20">Edit</a>
+
+             
+            <!-- <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2">Edit</button> -->
+            <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded delete-btn mt-2"
+              data-product-id="<%= product.id %>" data-product-name="<%= product.title %>">Delete</button>
+          </td>
+        </tr>
+        <% } %>
+        
+       
+        <% }else{ %>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td><h1>No Products Found!</h1></td>
+              <td></td>
+              <td></td>
+
+               <%}    %>
+       </tbody>
+    </table>
+  </div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/ejs@3.1.7/ejs.min.js"></script>
+<script>
+  const products = [
+    {
+      id: 1,
+      title: "Product 1",
+      description: "This is product 1.",
+      image: "/images/product1.jpg",
+      url: "https://www.example.com/product1",
+    },
+    {
+      id: 2,
+      title: "Product 2",
+      description: "This is product 2.",
+      image: "/images/product2.jpg",
+      url: "https://www.example.com/product2",
+    },
+    {
+      id: 3,
+      title: "Product 3",
+      description: "This is product 3.",
+      image: "/images/product3.jpg",
+      url: "https://www.example.com/product3",
+    },
+  ];
+
+
+
+  function deleteProduct(id, productName) {
+    const confirmation = window.confirm(`Are you sure you want to delete the product "${productName}"?`);
+
+    if (confirmation) {
+      // Call the /delete API here
+      fetch(`/product/${id}`, { method: 'DELETE' })
+        .then((response) => {
+
+          if (response.status === 202) {
+            // Successfully deleted the product, remove it from the local products array
+            const productIndex = products.findIndex(p => p.id === id);
+
+            if (productIndex !== -1) {
+              products.splice(productIndex, 1);
+
+              
+            }
+          }
+
+       //    Reload my page
+       alert('Data Deleted Successfully');
+       location.reload();
+        })
+        .catch((error) => {
+          console.error('Error deleting the product:', error);
+        });
+    }
+  }
+
+  function renderProductList() {
+    EJS.render("admin.ejs", { products, searchTerm }, (err, html) => {
+      if (err) {
+        console.error(err);
+      } else {
+        document.body.innerHTML = html;
+      }
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+//     renderProductList(); // Initially render the product list
+
+    // Event delegation to handle click events for delete buttons
+    document.body.addEventListener("click", (event) => {
+      const target = event.target;
+      if (target.classList.contains("delete-btn")) {
+        const productId = +target.dataset.productId;
+        const productName = target.dataset.productName;
+        deleteProduct(productId, productName);
+      }
+      if (target.classList.contains("copy-btn")) {
+       const productName = target.getAttribute('data-product-name');
+       copyTextToClipboard(productName);
+       alert('Product url copied to clipboard: ' + "https://"+window.location.hostname + "/product/"+productName);
+       
+      }
+    });
+  });
+
+
+
+  
+
+  // Function to copy text to clipboard
+  function copyTextToClipboard(text) {
+    const textArea = document.createElement('textarea');
+    textArea.value = "https://"+window.location.hostname + "/product/"+text;
+    document.body.appendChild(textArea);
+    textArea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textArea);
+  }
+
+</script>
+
+</html>
