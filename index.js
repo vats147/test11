@@ -19,7 +19,7 @@ app.get('/', (req, res) => {
 
 app.get('/products', (req, res) => {
 
-       // res.send(products);
+       res.send(products);
 });
 
 app.get('/admin', (req, res) => {
