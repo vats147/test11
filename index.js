@@ -8,7 +8,7 @@ const app = express();
 const data = JSON.parse(fs.readFileSync('data.json', 'utf-8'));
 const products = data.products;
 
-//app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.set('view engine', 'ejs');
 
